@@ -1,5 +1,6 @@
-# H1 My first README file
+H1 My first README file
 - [ x ] install pycharm professional
 - [ x ] set up all the accounts
 - [ ] do the first assignment
-![Alt Text](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwhat.thedailywtf.com%2Fpost%2F1923465&psig=AOvVaw2J6FsSeaJyTzUIuFlEdNvi&ust=1744742678337000&source=images&opi=89978449)
+![Alt Text](![1612827607426-fa841c4b-fa0a-4275-9e8d-e9ca1d109e0b-image](https://github.com/user-attachments/assets/aa527505-c74d-49e5-a01e-dbfcf00d5205)
+)
