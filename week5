@@ -1,0 +1,128 @@
+import sys
+
+inventory = []
+inventory_limit = 5
+
+items_in_room = [
+    {"name": "glowing rubber chicken", "type": "tool"},
+    {"name": "jar of suspicious pickles", "type": "food"},
+    {"name": "mysterious potato", "type": "artifact"},
+    {"name": "angry ukulele", "type": "weapon"},
+    {"name": "ceremonial sock", "type": "relic"},
+]
+
+def show_room_items():
+    if items_in_room:
+        print("You look around the Weird Island and find:")
+        for item in items_in_room:
+            print(f"- {item['name'].capitalize()}")
+    else:
+        print("There's just sand and your regrets here.")
+
+def show_inventory():
+    if inventory:
+        print("You're lugging around:")
+        for item in inventory:
+            print(f"- {item['name'].capitalize()}")
+    else:
+        print("Your pockets are empty. Weird, right?")
+
+def find_item(item_name, source):
+    for item in source:
+        if item["name"].lower() == item_name.lower():
+            return item
+    return None
+
+def pick_up(item_name):
+    if len(inventory) >= inventory_limit:
+        print("You're carrying too much nonsense already.")
+        return
+
+    item = find_item(item_name, items_in_room)
+    if item:
+        inventory.append(item)
+        items_in_room.remove(item)
+        print(f"You awkwardly pick up the {item_name}. It jiggles slightly.")
+    else:
+        print(f"No {item_name} here. Try your imagination instead.")
+
+def drop(item_name):
+    item = find_item(item_name, inventory)
+    if item:
+        inventory.remove(item)
+        items_in_room.append(item)
+        print(f"You drop the {item_name}. It makes a strange sound.")
+    else:
+        print(f"You don't even HAVE a {item_name}!")
+
+def use(item_name):
+    item = find_item(item_name, inventory)
+    if item:
+        if item["name"] == "glowing rubber chicken" and find_item("mysterious potato", inventory):
+            print("You slap the mysterious potato with the glowing rubber chicken. A sacred fire ignites!")
+            print("🧦🔥 The Ceremonial Sock begins to levitate. You have summoned... RESCUE! 🚁")
+            print("🏝️ You escaped the Weird Island. But at what cost?")
+            sys.exit()
+        elif item["name"] == "jar of suspicious pickles":
+            print("You eat a pickle. Reality shifts slightly. Ew.")
+        elif item["name"] == "angry ukulele":
+            print("You strum the ukulele. It bites you. Rude.")
+        else:
+            print(f"You try using the {item_name}, but it just hums quietly.")
+    else:
+        print(f"You don’t have a {item_name}.")
+
+def examine(item_name):
+    item = find_item(item_name, inventory) or find_item(item_name, items_in_room)
+    if item:
+        print(f"\n🕵️ {item['name'].capitalize()} — Type: {item['type'].capitalize()}")
+        descriptions = {
+            "glowing rubber chicken": "It glows... but not in a comforting way.",
+            "jar of suspicious pickles": "They stare back at you.",
+            "mysterious potato": "It hums with ancient starch energy.",
+            "angry ukulele": "It’s always slightly out of tune. And angry.",
+            "ceremonial sock": "It’s holy. Literally. There’s a hole."
+        }
+        print(descriptions.get(item["name"], "It's weird. But so is everything here."))
+    else:
+        print(f"No {item_name} to examine. Maybe it's invisible.")
+
+def show_help():
+    print("""
+🧭 Available commands:
+- inventory          → Show your weird stuff
+- look               → See what's around
+- pickup [item]      → Collect something bizarre
+- drop [item]        → Let go of an item
+- use [item]         → Try using an item
+- examine [item]     → Inspect the strange
+- help               → Show commands
+- quit               → Escape... the game
+""")
+
+# === GAME START ===
+print("🌀 Welcome to WEIRD ISLAND 🌀")
+print("Your only way out: ignite the Sacred Sock Fire with the right items.")
+show_help()
+
+while True:
+    command = input("\n> ").strip().lower()
+    if command == "inventory":
+        show_inventory()
+    elif command == "look":
+        show_room_items()
+    elif command.startswith("pickup "):
+        pick_up(command.split(" ", 1)[1])
+    elif command.startswith("drop "):
+        drop(command.split(" ", 1)[1])
+    elif command.startswith("use "):
+        use(command.split(" ", 1)[1])
+    elif command.startswith("examine "):
+        examine(command.split(" ", 1)[1])
+    elif command == "help":
+        show_help()
+    elif command == "quit":
+        print("You close your eyes and fade out of the nonsense. Goodbye!")
+        break
+    else:
+        print("The island doesn't understand you. Try again.")
