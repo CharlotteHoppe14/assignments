@@ -1,0 +1,82 @@
+import random
+import time
+
+def get_int_input(prompt, min_v, max_v):
+    while True:
+        s = input(prompt)
+        if not s.isdigit():
+            print('Enter a *number* please!')
+            continue
+        val = int(s)
+        if val < min_v or val > max_v:
+            print(f"Between {min_v} and {max_v}, please.")
+            continue
+        return val
+
+def get_str_input(prompt, min_len=1):
+    s = input(prompt)
+    while len(s) < min_len or not s.isalpha():
+        print("Use some letters (no numbers, no empty, please)!")
+        s = input(prompt)
+    return s
+
+def pick_random_base(shape_name):
+    face_bases = [
+        [" (•_•) ", " /| |\\", " /   \\"],
+        [" (^_^)",  "/|Y|\\", " d   b"],   # little animal
+        [" 0_0 ",  " |#| ", " /Y\\ "],     # robot
+        [" (o.o)", " <| |>", " /   \\"],   # wizard
+        [" ('_')", "/---\\", " U   U"]     # sad guy
+    ]
+    specials = {
+        'star': [
+            ["  *  ", " *** ", "*****", " *** ", "  *  "],
+            ["  .  ", " .*. ", ".*.*.", " .*. ", "  .  "]
+        ],
+    }
+    # User secrets for surprise: input 'star' as name gives star instead of face
+    if shape_name.lower() == 'star':
+        return random.choice(specials['star'])
+    else:
+        return random.choice(face_bases)
+
+def ascii_tile(tile, width, height):
+    # Each tile is a list of strings (lines)
+    final_lines = [''] * (len(tile)*height)
+    for i in range(height):
+        for j, line in enumerate(tile):
+            final_lines[i*len(tile)+j] = ""
+            for w in range(width):
+                # Randomly decorate each tile segment:
+                deco = random.choice(['', '✨', '★', '✦', ''])
+                if random.random() < 0.2:
+                    segment = line.replace(' ', deco)
+                else:
+                    segment = line
+                final_lines[i*len(tile)+j] += segment + '  '
+    return final_lines
+
+def animate_ascii(lines, delay=0.09):
+    for line in lines:
+        print(line)
+        time.sleep(delay)
+
+def main():
+    print("=== ASCII Tile Generator ===\n")
+    print("Let's make a mosaic of faces, pets or secret shapes!")
+    print("Name your creation (letters only, try 'star' for a surprise):")
+    shape = get_str_input("Shape name: ")
+    print("How many wide (2-6)?")
+    width = get_int_input("Width: ", 2, 6)
+    print("How many rows (2-5)?")
+    height = get_int_input("Height: ", 2, 5)
+    tile = pick_random_base(shape)
+    print("\n✨Generating your ASCII mosaic as an animation!✨\n")
+    ascii_img = ascii_tile(tile, width, height)
+    animate_ascii(ascii_img)
+    # Unexpected jest: reveal a phrase if they use their own name as shape
+    if shape.lower() in ['yournamehere']:  # Replace with user's own name for a personal touch
+        print("Surprise! ASCII art likes you 😺")
+
+if __name__ == "__main__":
+    main()
