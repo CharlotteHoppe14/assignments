@@ -1,0 +1,54 @@
+import pyjokes
+import time
+
+#CONSTANTS
+CHARACTER_ART = [
+    "  ^_^  ",
+    " (•_•) ",
+    " /|_|\\ ",
+    "  / \\  "
+]
+LINE_LENGTH = 50
+
+def typing(text, delay=0.03):
+    """Print each character with delay for talking effect."""
+    for c in text:
+        print(c, end='', flush=True)
+        time.sleep(delay)
+    print('')
+
+def print_ascii_character(art):
+    for line in art:
+        print(line.center(LINE_LENGTH))
+
+def get_joke():
+    """Get a joke from pyjokes."""
+    return pyjokes.get_joke()
+
+def tell_joke(joke):
+    """ASCII character delivers the joke."""
+    print_ascii_character(CHARACTER_ART)
+    print()
+    typing("Hi, I'm Joko, the ASCII bot. Wanna hear a joke?\n")
+    time.sleep(0.5)
+    typing(joke)
+    print()
+    typing("Hope that made you smile! 😁")
+
+def main():
+    joke = get_joke()
+    tell_joke(joke)
+
+if __name__ == '__main__':
+    main()
+
+"""
+=================== How to Use ===================
+Run in terminal with: python JokeTeller.py
+
+- Joko the ASCII bot will appear and deliver you a random programmer joke using pyjokes!
+- Just run and enjoy the humor.
+- For best effect, maximize your terminal so the speech and ASCII bot look good.
+==================================================
+"""
+
