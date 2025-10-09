@@ -1,0 +1,148 @@
+import tkinter as tk
+import random
+
+#CONSTANTS
+BRUSHES = ['😀', '🌸', '🌿', '🔥', '⭐', '🍀', '🐶', '🍄']
+
+#BASE AND SUBCLASSES
+
+class CanvasObject:
+    """Base class for drawable objects in the game."""
+    def __init__(self, x, y, brush):
+        self._x = x
+        self._y = y
+        self._brush = brush
+
+    def draw(self, canvas):
+        # Override in subclass
+        pass
+
+    def set_pos(self, x, y):
+        self._x = x
+        self._y = y
+
+    def get_pos(self):
+        return self._x, self._y
+
+    def set_brush(self, brush):
+        self._brush = brush
+
+    def get_brush(self):
+        return self._brush
+
+class EmojiStamp(CanvasObject):
+    """Represents an emoji stamp drawn on the canvas."""
+    def __init__(self, x, y, brush, size):
+        super().__init__(x, y, brush)
+        self._size = size  # private attribute
+
+    def draw(self, canvas):
+        canvas.create_text(self._x, self._y, text=self._brush, font=('Arial', self._size))
+
+    def set_size(self, size):
+        self._size = size
+
+    def get_size(self):
+        return self._size
+
+#MAIN GAME CLASS
+
+class EmojiDrawingGame:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Emoji Drawing Game")
+        self.width = 600
+        self.height = 400
+
+        self._brush = random.choice(BRUSHES)
+        self._brush_size = 22
+        self._objects = []
+
+        self.instruction_mode = True
+
+        self.canvas = tk.Canvas(self.root, width=self.width, height=self.height, bg='lavender')
+        self.canvas.pack()
+
+        # Instruction screen
+        self.instruction_text = self.canvas.create_text(
+            self.width // 2, self.height // 2 - 40,
+            text=(
+                "🎨 Emoji Drawing Game 🎨\n\n"
+                "- Click the start button to begin.\n"
+                "- Left-click to draw emojis!\n"
+                "- Press 'b' to change brush, +/- to adjust size.\n"
+                "- Press 'c' to clear the canvas.\n"
+                "- Try to fill the screen with colorful fun!"
+            ),
+            font=('Segoe UI', 16), fill='indigo', justify=tk.CENTER
+        )
+        self.start_button = tk.Button(self.root, text='Start Drawing', command=self.start_game, font=('Segoe UI', 12, 'bold'))
+        self.canvas.create_window(self.width//2, self.height//2+90, window=self.start_button)
+
+    #Setters/Getters for attributes
+    def set_brush(self, brush):
+        self._brush = brush
+
+    def get_brush(self):
+        return self._brush
+
+    def set_brush_size(self, size):
+        self._brush_size = size
+
+    def get_brush_size(self):
+        return self._brush_size
+
+    def start_game(self):
+        self.canvas.delete(self.instruction_text)
+        self.start_button.destroy()
+        self.instruction_mode = False
+        self.setup_game_events()
+
+    def setup_game_events(self):
+        self.canvas.bind("<Button-1>", self.on_click)
+        self.root.bind("<Key>", self.on_key_press)
+
+    def on_click(self, event):
+        if self.instruction_mode:
+            return
+        obj = EmojiStamp(event.x, event.y, self.get_brush(), self.get_brush_size())
+        obj.draw(self.canvas)
+        self._objects.append(obj)
+
+    def on_key_press(self, event):
+        if self.instruction_mode:
+            return
+        if event.char == 'b':
+            # Pick a random new brush
+            brush = random.choice(BRUSHES)
+            self.set_brush(brush)
+        elif event.char == '+':
+            self.set_brush_size(min(self.get_brush_size() + 4, 64))
+        elif event.char == '-':
+            self.set_brush_size(max(self.get_brush_size() - 4, 12))
+        elif event.char == 'c':
+            self.canvas.delete("all")
+            self._objects = []
+
+#MAIN FUNCTION
+
+def main():
+    root = tk.Tk()
+    game = EmojiDrawingGame(root)
+    root.mainloop()
+
+if __name__ == '__main__':
+    main()
+
+"""
+=================== Controls & Gameplay ===================
+🎨  Emoji Drawing Game  🎨
+
+- Begin: Press the "Start Drawing" button.
+- Draw: Left mouse click anywhere to draw an emoji at that position.
+- Change Brush: Press 'b' to switch to a random emoji brush.
+- Change Size: Press '+' to make emoji larger, '-' to make them smaller.
+- Clear: Press 'c' to clear the canvas and start fresh.
+- Objective: Have fun decorating your screen! Try filling it with different emoji stamps.
+
+"""
